@@ -89,9 +89,20 @@ num_iters = 400;
 theta = zeros(3, 1);
 [theta, J_history] = gradientDescentMulti(X, y, theta, alpha, num_iters);
 
+% Run gradient descent with other rates
+alpha1 = .001;
+theta1 = zeros(3, 1);
+[theta1, J_history1] = gradientDescentMulti(X, y, theta1, alpha1, num_iters);
+alpha2 = .1;
+theta2 = zeros(3, 1);
+[theta2, J_history2] = gradientDescentMulti(X, y, theta2, alpha2, num_iters);
+
 % Plot the convergence graph
 figure;
 plot(1:numel(J_history), J_history, '-b', 'LineWidth', 2);
+hold on;
+plot(1:numel(J_history1), J_history1, '-r', 'LineWidth', 2);
+plot(1:numel(J_history2), J_history2, '-g', 'LineWidth', 2);
 xlabel('Number of iterations');
 ylabel('Cost J');
 
@@ -104,7 +115,9 @@ fprintf('\n');
 % ====================== YOUR CODE HERE ======================
 % Recall that the first column of X is all-ones. Thus, it does
 % not need to be normalized.
-price = 0; % You should change this
+normalizedFeatureVector = ([1650 3] - mu) ./ sigma;
+normalizedFeatureVector = [1 normalizedFeatureVector];
+price = normalizedFeatureVector * theta; % You should change this
 
 
 % ============================================================
@@ -149,7 +162,8 @@ fprintf('\n');
 
 % Estimate the price of a 1650 sq-ft, 3 br house
 % ====================== YOUR CODE HERE ======================
-price = 0; % You should change this
+featureVector = [1 1650 3];
+price = featureVector * theta; % You should change this
 
 
 % ============================================================
