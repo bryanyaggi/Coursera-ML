@@ -21,15 +21,11 @@ p = zeros(size(X, 1), 1);
 %       can use max(A, [], 2) to obtain the max for each row.
 %
 
-
-
-
-
-
-
-
-
+X = [ones(m, 1), X]; % add bias column
+A = sigmoid(X * Theta1'); % hidden layer activation matrix
+A = [ones(size(A, 1), 1), A]; % add bias column
+[maxVals, indicies] = max(sigmoid(A * Theta2'), [], 2);
+p = indicies;
 % =========================================================================
-
 
 end
