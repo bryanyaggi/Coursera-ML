@@ -61,31 +61,51 @@ Theta2_grad = zeros(size(Theta2));
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 % -------------------------------------------------------------
+
+% Part 1
+% Feedforward
+A_1 = [ones(m, 1), X]; % add bias column
+A_2 = sigmoid(A_1 * Theta1'); % hidden layer activation matrix
+A_2 = [ones(size(A_1, 1), 1), A_2]; % add bias column
+A_3 = sigmoid(A_2 * Theta2'); % output matrix
+
+% Create label matrix
+Y = zeros(m, num_labels);
+for i = 1:m
+  Y(i, y(i)) = 1;
+end
+
+% Compute cost
+J = (1 / m) * sum((-Y .* log(A_3) - (1 - Y) .* log(1 - A_3))(:));
+J_r = (lambda / (2 * m)) * (sum((Theta1(:, 2:end) .^ 2)(:)) + ...
+  sum((Theta2(:, 2:end) .^ 2)(:)));
+J = J + J_r;
+
+% Part 2
+% Backpropogation
+Delta_1 = zeros(size(Theta1)); % parital Theta1 gradient accumulator
+Delta_2 = zeros(size(Theta2)); % partial Theta2 gradient accumulator
+for i = 1:m % loop through training examples
+  % feedforward
+  a_1 = [1; X(i, :)'];
+  z_2 = Theta1 * a_1;
+  a_2 = [1; sigmoid(z_2)];
+  z_3 = Theta2 * a_2;
+  a_3 = sigmoid(z_3);
+  % backpropogation
+  delta_3 = a_3 - Y(i, :)';
+  delta_2 = ((Theta2' * delta_3) .* [1; sigmoidGradient(z_2)])(2:end);
+  % update gradient accumulators
+  Delta_1 = Delta_1 + delta_2 * a_1';
+  Delta_2 = Delta_2 + delta_3 * a_2';
+end
+Theta1_grad = (1 / m) * Delta_1 + [zeros(size(Theta1, 1), 1), (lambda / m) * Theta1(:, 2:end)];
+Theta2_grad = (1 / m) * Delta_2 + [zeros(size(Theta2, 1), 1), (lambda / m) * Theta2(:, 2:end)];
 
 % =========================================================================
 
 % Unroll gradients
 grad = [Theta1_grad(:) ; Theta2_grad(:)];
-
 
 end
